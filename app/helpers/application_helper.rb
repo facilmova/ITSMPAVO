@@ -202,7 +202,9 @@ module ApplicationHelper
     when 'CustomValue', 'CustomFieldValue'
       if object.custom_field
         f = object.custom_field.format.formatted_custom_value(self, object, html)
+
         if f.nil? || f.is_a?(String)
+          f = treat_select_field_customized(f)
           f
         else
           format_object(f, html, &block)
@@ -212,6 +214,14 @@ module ApplicationHelper
       end
     else
       html ? h(object) : object.to_s
+    end
+  end
+
+  def treat_select_field_customized(f)
+    if f.nil? or f.index('-') == nil
+      f
+    else
+      f[f.rindex('-')+1 .. f.length]
     end
   end
 
